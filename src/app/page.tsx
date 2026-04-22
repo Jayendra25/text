@@ -25,17 +25,17 @@ export default function Home() {
 
     setLoading(true);
     setError("");
-    
+
     try {
       const res = await fetch("/api/texts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content, expiryMinutes }),
       });
-      
+
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to create link");
-      
+
       const generatedLink = `${window.location.origin}/${data.id}`;
       setLink(generatedLink);
     } catch (err: any) {
@@ -63,9 +63,9 @@ export default function Home() {
       {/* Background gradients */}
       <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-600/20 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-fuchsia-600/20 blur-[120px] pointer-events-none" />
-      
+
       <main className="w-full max-w-4xl relative z-10 flex flex-col gap-8">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center space-y-4"
@@ -84,7 +84,7 @@ export default function Home() {
 
         <AnimatePresence mode="wait">
           {!link ? (
-            <motion.div 
+            <motion.div
               key="editor"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -101,15 +101,15 @@ export default function Home() {
                   placeholder="Paste your secrets here..."
                   className="w-full h-[40vh] sm:h-[50vh] bg-transparent resize-none p-6 text-white/90 focus:outline-none placeholder:text-white/20 font-mono text-sm sm:text-base transition-colors focus:bg-white/[0.02]"
                 />
-                
+
                 <div className="absolute bottom-4 right-4 flex items-center gap-3">
                   <div className="flex items-center gap-2 bg-black/60 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10">
                     <Clock className="w-4 h-4 text-white/40" />
                     <span className="text-sm text-white/60">Expires in:</span>
-                    <input 
-                      type="number" 
-                      min="1" 
-                      max="10" 
+                    <input
+                      type="number"
+                      min="1"
+                      max="10"
                       value={expiryMinutes}
                       onChange={(e) => setExpiryMinutes(Number(e.target.value))}
                       className="w-12 bg-transparent text-white font-medium focus:outline-none text-center"
@@ -118,12 +118,12 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex items-center justify-between px-4 pb-2">
                 <div className="text-sm text-red-400/80 font-medium h-5">
-                   {error && <motion.span initial={{opacity:0}} animate={{opacity:1}}>{error}</motion.span>}
+                  {error && <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}>{error}</motion.span>}
                 </div>
-                
+
                 <button
                   onClick={handleSubmit}
                   disabled={loading || !content}
@@ -143,7 +143,7 @@ export default function Home() {
               </div>
             </motion.div>
           ) : (
-            <motion.div 
+            <motion.div
               key="result"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -155,17 +155,17 @@ export default function Home() {
               </div>
               <h2 className="text-3xl font-bold">Your link is ready!</h2>
               <p className="text-white/50 text-lg">
-                Anyone with this link can view and edit the text. <br/>It will automatically expire in {expiryMinutes} minutes.
+                Anyone with this link can view and edit the text. <br />It will automatically expire in {expiryMinutes} minutes.
               </p>
-              
+
               <div className="flex items-center w-full max-w-lg mt-4 bg-black/40 border border-white/10 p-2 rounded-2xl">
-                <input 
-                  type="text" 
-                  readOnly 
-                  value={link} 
+                <input
+                  type="text"
+                  readOnly
+                  value={link}
                   className="flex-1 bg-transparent px-4 text-white/80 focus:outline-none font-mono text-sm"
                 />
-                <button 
+                <button
                   onClick={copyToClipboard}
                   className="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl transition-colors flex items-center gap-2 font-medium"
                 >
@@ -174,9 +174,9 @@ export default function Home() {
               </div>
 
               <div className="mt-8 pt-8 border-t border-white/10 w-full flex justify-center">
-                 <button onClick={reset} className="text-white/50 hover:text-white transition-colors flex items-center gap-2 font-medium">
-                    <Plus className="w-4 h-4" /> Create another
-                 </button>
+                <button onClick={reset} className="text-white/50 hover:text-white transition-colors flex items-center gap-2 font-medium">
+                  <Plus className="w-4 h-4" /> Create another
+                </button>
               </div>
             </motion.div>
           )}

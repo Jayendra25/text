@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
+import os from 'os';
 
 export interface SharedText {
   id: string;
@@ -8,7 +9,9 @@ export interface SharedText {
   expiresAt: number;
 }
 
-const DB_FILE = path.join(process.cwd(), 'data.json');
+const DB_FILE = process.env.VERCEL 
+  ? path.join(os.tmpdir(), 'data.json') 
+  : path.join(process.cwd(), 'data.json');
 
 async function ensureDb() {
   try {
