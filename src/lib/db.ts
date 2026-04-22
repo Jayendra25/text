@@ -1,7 +1,3 @@
-import fs from 'fs/promises';
-import path from 'path';
-import os from 'os';
-
 export interface SharedText {
   id: string;
   content: string;
@@ -9,26 +5,21 @@ export interface SharedText {
   expiresAt: number;
 }
 
-const DB_FILE = process.env.VERCEL 
-  ? path.join(os.tmpdir(), 'data.json') 
-  : path.join(process.cwd(), 'data.json');
+declare global {
+  var __texts_db: Record<string, SharedText> | undefined;
+}
 
-async function ensureDb() {
-  try {
-    await fs.access(DB_FILE);
-  } catch {
-    await fs.writeFile(DB_FILE, JSON.stringify({}), 'utf-8');
-  }
+if (!global.__texts_db) {
+  global.__texts_db = {};
 }
 
 export async function getDb(): Promise<Record<string, SharedText>> {
-  await ensureDb();
-  const data = await fs.readFile(DB_FILE, 'utf-8');
-  return JSON.parse(data);
+  if (!global.__texts_db) global.__texts_db = {};
+  return global.__texts_db;
 }
 
 export async function saveDb(data: Record<string, SharedText>) {
-  await fs.writeFile(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+  global.__texts_db = data;
 }
 
 export async function createText(id: string, content: string, expiryMinutes: number): Promise<SharedText> {
